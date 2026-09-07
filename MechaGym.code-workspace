@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "M5Stick.ServoProject",
+			"path": "../M5Stick.ServoProject"
+		}
+	],
+	"settings": {}
+}
