@@ -8,22 +8,14 @@ unsigned long reactionStart = 0;
 
 int speed = 0;
 
+int appMode = 0;
 
-void setup() {
-  M5.begin();
-  M5.Lcd.setRotation(3);
-  M5.Lcd.fillScreen(BLUE);
-  M5.Lcd.setTextColor(GREEN, BLUE);
-  M5.Lcd.setTextSize(2);
-  M5.Lcd.setCursor(20,50);
-  M5.Lcd.print("PRESS A TO START!");
+int gymCursor = 1;
 
-}
+float accX, accY, accZ;
 
-void loop() {
-  M5.update();
-  M5.Beep.update();
-  switch (gameState) {
+void runReactionGame() {
+switch (gameState) {
   case 0:
   if (M5.BtnA.wasPressed()) {
     M5.Lcd.fillScreen(RED);
@@ -67,12 +59,19 @@ void loop() {
     M5.Lcd.setTextColor(YELLOW, BLACK);
     M5.Lcd.printf("%lu ms", reactionTime);
   
-  if (reactionTime < 200) {
+  if (reactionTime < 200 && reactionTime > 5) {
     M5.Lcd.fillScreen(BLACK);
     M5.Lcd.setCursor(10, 50);
     M5.Lcd.setTextSize(3);
     M5.Lcd.setTextColor(GREEN, BLACK);
     M5.Lcd.print("CYBER GOD!");
+  }
+  else if (reactionTime < 5){
+  M5.Lcd.fillScreen(BLACK);
+    M5.Lcd.setCursor(10, 50);
+    M5.Lcd.setTextSize(3);
+    M5.Lcd.setTextColor(GREEN, BLACK);
+    M5.Lcd.print("GO FUCK!");
   }
   else if (reactionTime < 320 && reactionTime > 200) {
     M5.Lcd.fillScreen(BLACK);
@@ -92,4 +91,128 @@ void loop() {
   }
 break;
 }
+}
+
+void updateSpeedUI() {
+    M5.Lcd.fillScreen(BLACK);
+
+    if (speed >= 80) M5.Lcd.setTextColor(RED, BLACK);
+    else M5.Lcd.setTextColor(GREEN, BLACK);
+
+    M5.Lcd.setTextSize(4);
+    M5.Lcd.setCursor(10, 10);
+    M5.Lcd.print(speed);
+
+    M5.Lcd.setTextSize(3);
+    M5.Lcd.setCursor(10, 55);
+
+    if (speed == 0) {
+        M5.Lcd.setTextColor(BLUE, BLACK);
+        M5.Lcd.print("PARKED");
+    } else if (speed > 0 && speed < 80) {
+        M5.Lcd.setTextColor(GREEN, BLACK);
+        M5.Lcd.print("DRIVE");
+    } else if (speed >= 80) {
+        M5.Lcd.setTextColor(RED, BLACK);
+        M5.Lcd.print("OVERHEAT!");
+    }
+}
+
+void runSpeedDash() {
+    if (M5.BtnA.wasPressed()) {
+        speed += 10;
+        if (speed > 100) speed = 100;
+        M5.Beep.tone(3500, 30);
+        updateSpeedUI();
+    }
+
+    if (M5.BtnB.wasPressed()) {
+        speed -= 10;
+        if (speed < 0) speed = 0;
+        M5.Beep.tone(1500, 30);
+        updateSpeedUI();
+    }
+}
+
+void drawGymMenu() {
+    M5.Lcd.fillScreen(BLACK);
+    M5.Lcd.setTextColor(YELLOW, BLACK);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.setCursor(20, 10);
+    M5.Lcd.print("=== MECHA GYM ===");
+
+    const char* list[3] = {
+        "1. SPEED DASH",
+        "2. REACTION GAME",
+        "3. SHAKE DICE"
+    };
+
+    for (int i = 0; i < 3; i++) {
+        M5.Lcd.setCursor(15, 45 + (i * 25));
+        if (gymCursor == (i + 1)) {
+            M5.Lcd.setTextColor(GREEN, BLACK);
+            M5.Lcd.printf("> %s", list[i]);
+        } else {
+            M5.Lcd.setTextColor(WHITE, BLACK);
+            M5.Lcd.printf("  %s", list[i]);
+        }
+    }
+}
+
+void setup() {
+  M5.begin();
+  M5.Imu.Init();
+  M5.Lcd.setRotation(3);
+  M5.Lcd.fillScreen(BLUE);
+  M5.Lcd.setTextColor(GREEN, BLUE);
+  M5.Lcd.setTextSize(2);
+  M5.Lcd.setCursor(20,50);
+  M5.Lcd.print("PRESS A TO START!");
+
+}
+
+void loop() {
+  M5.update();
+  M5.Beep.update();
+  M5.IMU.getAccelData(&accX, &accY, &accZ);
+  float totalAcc = abs(accX) + abs(accY) + abs(accZ);
+
+ if (appMode != 0 && M5.BtnB.wasReleasefor(700)) {
+        appMode = 0;
+        drawGymMenu();
+    }
+switch (appMode) {
+        case 0:
+            if (M5.BtnB.wasPressed()) {
+                gymCursor++;
+                if (gymCursor > 3) gymCursor = 1;
+                drawGymMenu();
+            }
+            if (M5.BtnA.wasPressed()) {
+                appMode = gymCursor;
+                M5.Lcd.fillScreen(BLACK);
+                if (appMode == 1) updateSpeedUI();
+                if (appMode == 2) {
+                    // Стартовый экран игры на реакцию
+                    M5.Lcd.fillScreen(BLUE);
+                    M5.Lcd.setCursor(20, 50);
+                    M5.Lcd.setTextColor(WHITE, BLUE);
+                    M5.Lcd.setTextSize(2);
+                    M5.Lcd.print("PRESS A TO START!");
+                }
+            }
+            break;
+
+        case 1:
+            runSpeedDash();
+            break;
+
+        case 2:
+            runReactionGame();
+            break;
+
+        case 3:
+            // Сюда завтра добавим кубик!
+            break;
+    }
 }
