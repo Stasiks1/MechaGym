@@ -59,34 +59,30 @@ switch (gameState) {
     M5.Lcd.setTextColor(YELLOW, BLACK);
     M5.Lcd.printf("%lu ms", reactionTime);
   
-  if (reactionTime < 200 && reactionTime > 5) {
-    M5.Lcd.fillScreen(BLACK);
-    M5.Lcd.setCursor(10, 50);
-    M5.Lcd.setTextSize(3);
+M5.Lcd.fillScreen(BLACK);
+M5.Lcd.setCursor(10, 20);
+M5.Lcd.setTextSize(3);
+M5.Lcd.setTextColor(YELLOW, BLACK);
+M5.Lcd.printf("%lu ms", reactionTime);
+M5.Lcd.setCursor(10, 60);
+M5.Lcd.setTextSize(2);
+
+if (reactionTime < 5) {
+    M5.Lcd.setTextColor(PURPLE, BLACK);
+    M5.Lcd.print("IMPOSSIBLE! 🤖");
+} 
+else if (reactionTime < 200) {
     M5.Lcd.setTextColor(GREEN, BLACK);
-    M5.Lcd.print("CYBER GOD!");
-  }
-  else if (reactionTime < 5){
-  M5.Lcd.fillScreen(BLACK);
-    M5.Lcd.setCursor(10, 50);
-    M5.Lcd.setTextSize(3);
-    M5.Lcd.setTextColor(GREEN, BLACK);
-    M5.Lcd.print("GO FUCK!");
-  }
-  else if (reactionTime < 320 && reactionTime > 200) {
-    M5.Lcd.fillScreen(BLACK);
-    M5.Lcd.setCursor(10, 50);
-    M5.Lcd.setTextSize(3);
-    M5.Lcd.setTextColor(YELLOW, BLACK);
-    M5.Lcd.print("FAST!");
-  }
-  else {
-    M5.Lcd.fillScreen(BLACK);
-    M5.Lcd.setCursor(10, 50);
-    M5.Lcd.setTextSize(3);
+    M5.Lcd.print("CYBER GOD! ⚡");
+} 
+else if (reactionTime < 320) {
+    M5.Lcd.setTextColor(CYAN, BLACK);
+    M5.Lcd.print("FAST! 🏎️");
+} 
+else {
     M5.Lcd.setTextColor(RED, BLACK);
-    M5.Lcd.print("TOO SLOW!");
-  }
+    M5.Lcd.print("TOO SLOW! 🐢");
+}
   gameState = 0;
   }
 break;
