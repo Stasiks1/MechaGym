@@ -16,7 +16,13 @@ float accX, accY, accZ;
 
 void runReactionGame() {
 switch (gameState) {
-  case 0:
+    case 0:
+    M5.Lcd.fillScreen(BLUE);
+  M5.Lcd.setTextColor(GREEN, BLUE);
+  M5.Lcd.setTextSize(2);
+  M5.Lcd.setCursor(20,50);
+  M5.Lcd.print("PRESS A TO START!");
+  case 1:
   if (M5.BtnA.wasPressed()) {
     M5.Lcd.fillScreen(RED);
     M5.Lcd.setCursor(10, 50);
@@ -28,7 +34,7 @@ switch (gameState) {
     gameState = 1;
   }
   break;
-  case 1:
+  case 2:
   if (M5.BtnA.wasPressed()) {
     M5.Lcd.fillScreen(MAGENTA);
     M5.Lcd.setCursor(10,50);
@@ -50,7 +56,7 @@ switch (gameState) {
     gameState = 2;
   }
   break;
-  case 2:
+  case 3:
   if (M5.BtnA.wasPressed()) {
     unsigned long reactionTime = millis() - reactionStart;
     M5.Lcd.fillScreen(BLACK);
@@ -159,12 +165,6 @@ void setup() {
   M5.begin();
   M5.Imu.Init();
   M5.Lcd.setRotation(3);
-  M5.Lcd.fillScreen(BLUE);
-  M5.Lcd.setTextColor(GREEN, BLUE);
-  M5.Lcd.setTextSize(2);
-  M5.Lcd.setCursor(20,50);
-  M5.Lcd.print("PRESS A TO START!");
-
 }
 
 void loop() {
