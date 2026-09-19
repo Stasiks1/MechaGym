@@ -16,6 +16,7 @@ float accX, accY, accZ;
 
 void runReactionGame() {
     switch (gameState) {
+        // 0. Стартовое лобби
         case 0:
             if (M5.BtnA.wasPressed()) {
                 M5.Lcd.fillScreen(RED);
@@ -30,24 +31,23 @@ void runReactionGame() {
             }
             break;
 
+        // 1. Ожидание зеленого
         case 1:
+            // Фальстарт:
             if (M5.BtnA.wasPressed()) {
                 M5.Lcd.fillScreen(MAGENTA);
-                M5.Lcd.setCursor(10, 50);
+                M5.Lcd.setCursor(10, 30);
                 M5.Lcd.setTextColor(WHITE, MAGENTA);
                 M5.Lcd.setTextSize(3);
                 M5.Lcd.print("FALSE START!");
-                M5.Beep.tone(1000, 200);
-                delay(1500);
-
-                M5.Lcd.fillScreen(BLUE);
-                M5.Lcd.setCursor(20, 50);
-                M5.Lcd.setTextColor(WHITE, BLUE);
+                M5.Lcd.setCursor(10, 80);
                 M5.Lcd.setTextSize(2);
-                M5.Lcd.print("PRESS A TO START!");
-                gameState = 0;
+                M5.Lcd.print("Press A to retry");
+                M5.Beep.tone(1000, 200);
+                gameState = 3; // Ждем нажатия A для рестарта (без delay!)
             }
-            if (millis() - waitStart >= randomDelay) {
+            // Время вышло — стреляем!
+            else if (millis() - waitStart >= randomDelay) {
                 M5.Lcd.fillScreen(GREEN);
                 M5.Lcd.setCursor(10, 50);
                 M5.Lcd.setTextColor(BLACK, GREEN);
@@ -59,41 +59,53 @@ void runReactionGame() {
             }
             break;
 
+        // 2. Выстрел и замер рекорда
         case 2:
             if (M5.BtnA.wasPressed()) {
                 unsigned long reactionTime = millis() - reactionStart;
 
                 M5.Lcd.fillScreen(BLACK);
-                M5.Lcd.setCursor(10, 20);
+                M5.Lcd.setCursor(10, 15);
                 M5.Lcd.setTextSize(3);
                 M5.Lcd.setTextColor(YELLOW, BLACK);
                 M5.Lcd.printf("%lu ms", reactionTime);
 
-                M5.Lcd.setCursor(10, 60);
+                M5.Lcd.setCursor(10, 55);
                 M5.Lcd.setTextSize(2);
 
                 if (reactionTime < 5) {
                     M5.Lcd.setTextColor(PURPLE, BLACK);
-                    M5.Lcd.print("IMPOSSIBLE! 🤖");
+                    M5.Lcd.print("IMPOSSIBLE! ");
                 } else if (reactionTime < 200) {
                     M5.Lcd.setTextColor(GREEN, BLACK);
-                    M5.Lcd.print("CYBER GOD! ⚡");
+                    M5.Lcd.print("CYBER GOD! ");
                 } else if (reactionTime < 320) {
                     M5.Lcd.setTextColor(CYAN, BLACK);
-                    M5.Lcd.print("FAST! 🏎️");
+                    M5.Lcd.print("FAST! ");
                 } else {
                     M5.Lcd.setTextColor(RED, BLACK);
-                    M5.Lcd.print("TOO SLOW! 🐢");
+                    M5.Lcd.print("TOO SLOW! ");
                 }
 
-                delay(3000);
+                // Подсказка внизу:
+                M5.Lcd.setCursor(10, 100);
+                M5.Lcd.setTextColor(WHITE, BLACK);
+                M5.Lcd.setTextSize(1);
+                M5.Lcd.print("[ Press A to Try Again ]");
 
+                gameState = 3; // Переходим в ожидание рестарта
+            }
+            break;
+
+        // 3. Экран результатов (ждем клика A для нового раунда)
+        case 3:
+            if (M5.BtnA.wasPressed()) {
                 M5.Lcd.fillScreen(BLUE);
                 M5.Lcd.setCursor(20, 50);
                 M5.Lcd.setTextColor(WHITE, BLUE);
                 M5.Lcd.setTextSize(2);
                 M5.Lcd.print("PRESS A TO START!");
-                gameState = 0;
+                gameState = 0; // Возврат в лобби
             }
             break;
     }
@@ -217,6 +229,14 @@ switch (appMode) {
                     M5.Lcd.print("PRESS A TO START!");
                 }
             }
+            if (appMode == 2) {
+            gameState = 0; // Всегда сбрасываем игру на начало!
+             M5.Lcd.fillScreen(BLUE);
+             M5.Lcd.setCursor(20, 50);
+             M5.Lcd.setTextColor(WHITE, BLUE);
+            M5.Lcd.setTextSize(2);
+            M5.Lcd.print("PRESS A TO START!");
+}
             break;
 
         case 1:
