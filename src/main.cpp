@@ -15,84 +15,88 @@ int gymCursor = 1;
 float accX, accY, accZ;
 
 void runReactionGame() {
-switch (gameState) {
-    case 0:
-    M5.Lcd.fillScreen(BLUE);
-  M5.Lcd.setTextColor(GREEN, BLUE);
-  M5.Lcd.setTextSize(2);
-  M5.Lcd.setCursor(20,50);
-  M5.Lcd.print("PRESS A TO START!");
-  case 1:
-  if (M5.BtnA.wasPressed()) {
-    M5.Lcd.fillScreen(RED);
-    M5.Lcd.setCursor(10, 50);
-    M5.Lcd.setTextColor(WHITE, RED);
-    M5.Lcd.setTextSize(3);
-    M5.Lcd.print("WAIT!");
-    randomDelay = random(2000, 5000);
-    waitStart = millis();
-    gameState = 1;
-  }
-  break;
-  case 2:
-  if (M5.BtnA.wasPressed()) {
-    M5.Lcd.fillScreen(MAGENTA);
-    M5.Lcd.setCursor(10,50);
-    M5.Lcd.setTextColor(RED, MAGENTA);
-    M5.Lcd.setTextSize(3);
-    M5.Lcd.print("FALSE START!");
-    M5.Beep.tone(1000, 200);
-    delay(1500);
-    gameState = 0;
-  }
-  if (millis() - waitStart >= randomDelay){
-    M5.Lcd.fillScreen(GREEN);
-    M5.Lcd.setCursor(10,50);
-    M5.Lcd.setTextColor(RED, GREEN);
-    M5.Lcd.setTextSize(3);
-    M5.Lcd.print("FIRE! PRESS A!");
-    M5.Beep.tone(4000, 60);
-    reactionStart = millis();
-    gameState = 2;
-  }
-  break;
-  case 3:
-  if (M5.BtnA.wasPressed()) {
-    unsigned long reactionTime = millis() - reactionStart;
-    M5.Lcd.fillScreen(BLACK);
-    M5.Lcd.setCursor(10, 20);
-    M5.Lcd.setTextSize(3);
-    M5.Lcd.setTextColor(YELLOW, BLACK);
-    M5.Lcd.printf("%lu ms", reactionTime);
-  
-M5.Lcd.fillScreen(BLACK);
-M5.Lcd.setCursor(10, 20);
-M5.Lcd.setTextSize(3);
-M5.Lcd.setTextColor(YELLOW, BLACK);
-M5.Lcd.printf("%lu ms", reactionTime);
-M5.Lcd.setCursor(10, 60);
-M5.Lcd.setTextSize(2);
+    switch (gameState) {
+        case 0:
+            if (M5.BtnA.wasPressed()) {
+                M5.Lcd.fillScreen(RED);
+                M5.Lcd.setCursor(10, 50);
+                M5.Lcd.setTextColor(WHITE, RED);
+                M5.Lcd.setTextSize(3);
+                M5.Lcd.print("WAIT!");
+                
+                randomDelay = random(2000, 5000);
+                waitStart = millis();
+                gameState = 1;
+            }
+            break;
 
-if (reactionTime < 5) {
-    M5.Lcd.setTextColor(PURPLE, BLACK);
-    M5.Lcd.print("IMPOSSIBLE! 🤖");
-} 
-else if (reactionTime < 200) {
-    M5.Lcd.setTextColor(GREEN, BLACK);
-    M5.Lcd.print("CYBER GOD! ⚡");
-} 
-else if (reactionTime < 320) {
-    M5.Lcd.setTextColor(CYAN, BLACK);
-    M5.Lcd.print("FAST! 🏎️");
-} 
-else {
-    M5.Lcd.setTextColor(RED, BLACK);
-    M5.Lcd.print("TOO SLOW! 🐢");
-}
-  gameState = 0;
-  }
-break;
-}
+        case 1:
+            if (M5.BtnA.wasPressed()) {
+                M5.Lcd.fillScreen(MAGENTA);
+                M5.Lcd.setCursor(10, 50);
+                M5.Lcd.setTextColor(WHITE, MAGENTA);
+                M5.Lcd.setTextSize(3);
+                M5.Lcd.print("FALSE START!");
+                M5.Beep.tone(1000, 200);
+                delay(1500);
+
+                M5.Lcd.fillScreen(BLUE);
+                M5.Lcd.setCursor(20, 50);
+                M5.Lcd.setTextColor(WHITE, BLUE);
+                M5.Lcd.setTextSize(2);
+                M5.Lcd.print("PRESS A TO START!");
+                gameState = 0;
+            }
+            if (millis() - waitStart >= randomDelay) {
+                M5.Lcd.fillScreen(GREEN);
+                M5.Lcd.setCursor(10, 50);
+                M5.Lcd.setTextColor(BLACK, GREEN);
+                M5.Lcd.setTextSize(3);
+                M5.Lcd.print("FIRE! PRESS A!");
+                M5.Beep.tone(4000, 60);
+                reactionStart = millis();
+                gameState = 2;
+            }
+            break;
+
+        case 2:
+            if (M5.BtnA.wasPressed()) {
+                unsigned long reactionTime = millis() - reactionStart;
+
+                M5.Lcd.fillScreen(BLACK);
+                M5.Lcd.setCursor(10, 20);
+                M5.Lcd.setTextSize(3);
+                M5.Lcd.setTextColor(YELLOW, BLACK);
+                M5.Lcd.printf("%lu ms", reactionTime);
+
+                M5.Lcd.setCursor(10, 60);
+                M5.Lcd.setTextSize(2);
+
+                if (reactionTime < 5) {
+                    M5.Lcd.setTextColor(PURPLE, BLACK);
+                    M5.Lcd.print("IMPOSSIBLE! 🤖");
+                } else if (reactionTime < 200) {
+                    M5.Lcd.setTextColor(GREEN, BLACK);
+                    M5.Lcd.print("CYBER GOD! ⚡");
+                } else if (reactionTime < 320) {
+                    M5.Lcd.setTextColor(CYAN, BLACK);
+                    M5.Lcd.print("FAST! 🏎️");
+                } else {
+                    M5.Lcd.setTextColor(RED, BLACK);
+                    M5.Lcd.print("TOO SLOW! 🐢");
+                }
+
+                delay(3000);
+
+                M5.Lcd.fillScreen(BLUE);
+                M5.Lcd.setCursor(20, 50);
+                M5.Lcd.setTextColor(WHITE, BLUE);
+                M5.Lcd.setTextSize(2);
+                M5.Lcd.print("PRESS A TO START!");
+                gameState = 0;
+            }
+            break;
+    }
 }
 
 void updateSpeedUI() {
@@ -136,6 +140,22 @@ void runSpeedDash() {
     }
 }
 
+void runBubleLevel() {
+    int ballX = 120 + (accX * 80);
+    int ballY = 67 + (accY * 80);
+    ballX = constrain(ballX, 10, 230);
+    ballY = constrain(ballY, 10, 125);
+
+    M5.Lcd.fillScreen(BLACK);
+
+    M5.Lcd.drawCircle(120, 67, 15, GREEN);
+
+    uint16_t ballColor = (abs(accX) < 0.08 && abs(accY) < 0.08) ? GREEN : RED;
+    M5.Lcd.fillCircle(ballX, ballY, 8, ballColor);
+
+    delay(20);
+}
+
 void drawGymMenu() {
     M5.Lcd.fillScreen(BLACK);
     M5.Lcd.setTextColor(YELLOW, BLACK);
@@ -165,6 +185,7 @@ void setup() {
   M5.begin();
   M5.Imu.Init();
   M5.Lcd.setRotation(3);
+  drawGymMenu();
 }
 
 void loop() {
@@ -189,7 +210,6 @@ switch (appMode) {
                 M5.Lcd.fillScreen(BLACK);
                 if (appMode == 1) updateSpeedUI();
                 if (appMode == 2) {
-                    // Стартовый экран игры на реакцию
                     M5.Lcd.fillScreen(BLUE);
                     M5.Lcd.setCursor(20, 50);
                     M5.Lcd.setTextColor(WHITE, BLUE);
@@ -208,7 +228,7 @@ switch (appMode) {
             break;
 
         case 3:
-            // Сюда завтра добавим кубик!
+            runBubleLevel();
             break;
     }
 }
